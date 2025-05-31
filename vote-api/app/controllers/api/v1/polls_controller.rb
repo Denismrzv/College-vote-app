@@ -7,4 +7,20 @@ class Api::V1::PollsController < ApplicationController
     poll = Poll.find(params[:id])
     render json: poll, include: :votes
   end
+
+  def update
+    poll = Poll.find(params[:id])
+    if poll.update(poll_params)
+      render json: poll, status: :ok
+    else
+      render json: { errors: poll.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
+  private
+
+  def poll_params
+    params.require(:poll).permit(:title, options: [])
+  end
 end
+
